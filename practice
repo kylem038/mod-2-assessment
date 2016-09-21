@@ -1,0 +1,95 @@
+//start set up
+
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import App from './App';
+//
+// ReactDOM.render(
+//   <App />,
+//   document.getElementById('application')
+// );
+
+//start app
+import React , {Component} from 'react';
+import scoreWord from './ScoreWord';
+
+export default class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      wordInput: '',
+      score: null,
+    };
+    this.handleInput = this.handleInput.bind(this);
+    this.handleWordSubmit = this.handleWordSubmit.bind(this);
+  }
+
+  handleInput(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+
+  handleWordSubmit(e) {
+    e.preventDefault();
+    let score = scoreWord(this.state.wordInput, 1);
+    this.setState({ score: score });
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Scrabble Scorer</h1>
+        <h2>Your word score is: {this.state.score}</h2>
+        <form>
+        <input
+          type="text"
+          placeholder="Enter word here"
+          value={this.state.wordInput}
+          name="wordInput"
+          onChange={this.handleInput}
+        />
+        <button
+          type="submit"
+          children="Submit"
+          onClick={this.handleWordSubmit}
+        />
+        <button
+          type="reset"
+          children="Clear"
+          onClick={() => this.setState({ wordInput: '' })}
+        />
+        <button
+          type="reset"
+          children="Reset"
+          onClick={() => this.setState({ score: null })}
+        />
+        </form>
+      </div>
+    )
+  }
+}
+
+//scoreWord
+const letterScores = {
+  A: 1, B: 3, C: 3, D: 2,
+  E: 1, F: 4, G: 2, H: 4,
+  I: 1, J: 8, K: 5, L: 1,
+  M: 3, N: 1, O: 1, P: 3,
+  Q: 10, R: 1, S: 1, T: 1,
+  U: 1, V: 4, W: 4, X: 8,
+  Y: 4, Z: 10
+};
+
+const scoreWord = (wordInput, multipler) => {
+  if (!wordInput) return 0;
+  let newWord = wordInput.trim();
+  let scores = [];
+  for (var i = 0; i < newWord.length; i++){
+    scores.push(letterScores[newWord[i].toUpperCase()]);
+  }
+  let sum = scores.reduce((a,b) => a + b, 0);
+  let score = (sum * multipler);
+  return score;
+};
+
+export default scoreWord;
